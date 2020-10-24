@@ -1,0 +1,4 @@
+﻿  Quiz2.cpp
+C:\Users\RENDONARTEAGA\Documents\U. Nacional\Arquitectura\projects\Arquitectura\Quiz2\Quiz2.cpp(11,13): warning C4101: 'y2': variable local sin referencia
+C:\Users\RENDONARTEAGA\Documents\U. Nacional\Arquitectura\projects\Arquitectura\Quiz2\Quiz2.cpp(11,9): warning C4101: 'y1': variable local sin referencia
+  Quiz2.vcxproj -> C:\Users\RENDONARTEAGA\Documents\U. Nacional\Arquitectura\projects\Arquitectura\Debug\Quiz2.exe
