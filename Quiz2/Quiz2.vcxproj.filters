@@ -18,5 +18,8 @@
     <ClCompile Include="Quiz2.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\quiz 2020-1\Quiz\Quiz\Quiz.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
