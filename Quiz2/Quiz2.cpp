@@ -25,33 +25,43 @@ int main() {
 		finit;							se inicia la pila
 		fldln2;							st: loge(2)
 		fld x1;							st(1) : loge(2)  st(0) : x1
-		fyl2x;							st: ln(x1)
-		fstp y1;						guardamos el resultado
+		fyl2x;							st: loge(2)* log2(x1) = ln(x1)
+		fstp y1;						guardamos el resultado parcial en y1
+
 
 		fld x1;							Carga x1 a la pila
-		FLDL2E;							ST = log2 e, ST(1) = x1
-		fmulp ST(1), ST(0);			    ST = x1 * log2 e
-		fld1;							Cargamos 1 a la pila
-		fscale;							1 * 2elevado(x1 * log2 e)
+		fldl2e;							ST(0) = log2 e, ST(1) = x1
+		fmulp   st(1), st(0);			st(0) = log2(e) * x1
+		fld1;							st(0) = 1
+		fld     st(1);					st(0) = log2(e) * x1
+		fprem;							st(0) = residuo de log2(e) * x1 / 1
+		f2xm1;							calcula 2 ^ (residuo de log2(e) * x1 / 1) - 1
+		faddp   st(1), st(0);			suma 2 ^ (residuo de log2(e) * x1 / 1) - 1 con 1
+		fscale;							2 ^ (residuo de log2(e) * x1 / 1) * 2 ^ (x1 * log2(e))
 		fld y1;							Cargamos y1 a la pila
-		fadd st(0), st(1);				se suman ln(x1) y e
-		fstp y1;						se guarda
+		fadd st(0), st(1);				se suman ln(x1) y e^ x1
+		fstp y1;						se guarda y1
 		finit;							limpia registros
+
 
 		fldln2;							st: loge(2)
 		fld x2;							st: st(1) : loge(2)  st(0) : x2
 		fyl2x;							st: ln(x2)
-		fstp y2;						guardamos el resulado
+		fstp y2;						guardamos el resultado parcial en y2
 
-		fld x2;							Cargamos x2 a la pila
-		FLDL2E;							ST = log2 e, ST(1) = x2
-		fmulp ST(1), ST(0);				ST = x2 * log2 e
-		fld1;							Cargamos 1 a la pila
-		fscale;							1 * 2elevado(x2 * log2 e)
-		fld y2;							Cargamos y2 a la pila
-		fadd st(0), st(1);				se suman ln(x2) y e
-		fstp y2;						se guarda
-		finit;							limipia registros
+		fld x2;							Carga x2 a la pila
+		fldl2e;							ST(0) = log2 e, ST(1) = x2
+		fmulp   st(1), st(0);			st(0) = log2(e) * x2
+		fld1;							st(0) = 1
+		fld     st(1);					st(0) = log2(e) * x2
+		fprem;							st(0) = residuo de log2(e) * x2 / 1
+		f2xm1;							calcula 2 ^ (residuo de log2(e) * x2 / 1) - 1
+		faddp   st(1), st(0);			suma 2 ^ (residuo de log2(e) * x2 / 1) - 1 con 1
+		fscale;							2 ^ (residuo de log2(e) * x2 / 1) * 2 ^ (x2 * log2(e))
+		fld y2;							Cargamos y1 a la pila
+		fadd st(0), st(1);				se suman ln(x2) y e^ x2
+		fstp y2;						se guarda y2
+		finit;							limpia registros
 
 		fldz;							se carga un 0 a la pila
 		fld y1;							se carga y1 a la pila
@@ -70,7 +80,7 @@ int main() {
 			jne else2;					salta si no es igual
 			mov resultado, 1;			si es igual se guarda como solucion tipo 1
 			fld x2;						carga x2 a la pila
-			fstp raiz;					se guarda a x1 como raiz
+			fstp raiz;					se guarda a x2 como raiz
 			jmp finalif2;				Salto al final del programa
 
 			else2 :
@@ -100,16 +110,21 @@ int main() {
 			fldln2;						st: loge(2)
 			fld xm;						st: loge(2) xm
 			fyl2x;						st: ln(xm)
-			fstp ym;					guardamos el resulado
+			fstp ym;					guardamos el resultado parcial en ym
 
-			fld xm;						Cargamos xm a la pila
-			FLDL2E;						ST = log2 e, ST(1) = xm
-			fmulp ST(1), ST(0);			ST = xm * log2 e
-			fld1;						se carga 1 a la pila
-			fscale;						1 * 2elevado(xm * log2 e)
-			fld ym;						se carga ym a la pila
-			fadd st(0), st(1);			se suman ln(xm) y e
-			fstp ym;					se guarda la funcion
+			fld xm;						Carga xm a la pila
+			fldl2e;						ST(0) = log2 e, ST(1) = xm
+			fmulp   st(1), st(0);		st(0) = log2(e) * xm
+			fld1;						st(0) = 1
+			fld     st(1);				st(0) = log2(e) * xm
+			fprem;						st(0) = residuo de log2(e) * xm / 1
+			f2xm1;						calcula 2 ^ (residuo de log2(e) * xm / 1) - 1
+			faddp   st(1), st(0);		suma 2 ^ (residuo de log2(e) * xm / 1) - 1 con 1
+			fscale;						2 ^ (residuo de log2(e) * xm / 1) * 2 ^ (xm * log2(e))
+			fld ym;						Cargamos ym a la pila
+			fadd st(0), st(1);			se suman ln(xm) y e^ xm
+			fstp ym;					se guarda ym
+			finit;						limpia registros
 
 
 			while:
@@ -135,7 +150,7 @@ int main() {
 			fmul st(0), st(1);			multiplica ym con y1
 			fldz;						carga 0 a la pila
 			fcomi st(0), st(1);			compara 0 con ym * y1
-			jng else4;					salta si 0 no es mayor a y1 * ym
+			jbe else4;					salta si 0 es menor o igual a y1 * ym
 			fld xm;						carga xm a la pila
 			fstp x2;					le asigna el valor de xm a x2
 			fld ym;						carga ym a la pila
@@ -145,9 +160,9 @@ int main() {
 			else4 : ;					si no se cumple el condicional anterior
 			finit;						reinicia lapila
 			fld xm;						carga xm a la pila
-			fstp x1;					le asigna el valor de xm a x2
+			fstp x1;					le asigna el valor de xm a x1
 			fld ym;						carga ym a la pila
-			fstp y1;					se le asigna el valor de ym a y2
+			fstp y1;					se le asigna el valor de ym a y1
 
 			finalif4 : ;				fin del condicional del while
 
@@ -166,25 +181,30 @@ int main() {
 			fldln2;						st: loge(2)
 			fld xm;						st: loge(2) xm
 			fyl2x;						st: ln(xm)
-			fstp ym;					guardamos el resultado
+			fstp ym;					guardamos el resultado parcial en ym
 
-			fld xm;						Cargamos xm a la pila
-			FLDL2E;						ST = log2 e, ST(1) = xm
-			fmulp ST(1), ST(0);			ST = xm * log2 e
-			fld1;						Cargamos 1 a la pila
-			fscale;						1 * 2elevado(xm * log2 e)
+			fld xm;						Carga xm a la pila
+			fldl2e;						ST(0) = log2 e, ST(1) = xm
+			fmulp   st(1), st(0);		st(0) = log2(e) * xm
+			fld1;						st(0) = 1
+			fld     st(1);				st(0) = log2(e) * xm
+			fprem;						st(0) = residuo de log2(e) * xm / 1
+			f2xm1;						calcula 2 ^ (residuo de log2(e) * xm / 1) - 1
+			faddp   st(1), st(0);		suma 2 ^ (residuo de log2(e) * xm / 1) - 1 con 1
+			fscale;						2 ^ (residuo de log2(e) * xm / 1) * 2 ^ (xm * log2(e))
 			fld ym;						Cargamos ym a la pila
-			fadd st(0), st(1);			se suman ln(xm) y e
-			fstp ym;					se guarda
+			fadd st(0), st(1);			se suman ln(xm) y e^ xm
+			fstp ym;					se guarda ym
+			finit;						limpia registros
 
 
 			finit;						reinicia datos en la pila
-			fld aux;					carga la variable aux
 			fld xm;						carga xm
+			fld aux;					carga la variable aux
 			fsub st(0), st(1);			realiza la operacion xm - aux y se guarda en st(0)
-			fdiv st(0), st(1);			divide xm - aux por 2
-			fabs;						realiza el valor absoluto de la variable en st(0), osea(xm - aux) / 2
-			fstp error;					guarda | (xm - aux) / 2 | en error
+			fdiv st(0), st(1);			divide xm - aux por xm
+			fabs;						realiza el valor absoluto de la variable en st(0), osea(xm - aux) / xm
+			fstp error;					guarda | (xm - aux) / xm | en error
 
 			add contador, 1;			suma 1 al contador
 
@@ -237,7 +257,7 @@ int main() {
 		break;
 
 	case 2:
-		cout << xm << " es raiz con error " << error;
+		cout << endl << xm << " es raiz con error " << error;
 		break;
 
 	case 3:
